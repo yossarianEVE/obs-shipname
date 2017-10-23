@@ -3,3 +3,8 @@ secret/
 *.swp
 venv
 shipname.txt
+secret*
+build
+dist
+MANIFEST
+*.spec

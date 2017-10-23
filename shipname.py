@@ -1,6 +1,5 @@
-#!venv/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 from esipy import App, EsiClient, EsiSecurity
 from esipy.exceptions import APIException
