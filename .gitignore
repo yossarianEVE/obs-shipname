@@ -1,0 +1,5 @@
+__pycache__/
+secret/
+*.swp
+venv
+shipname.txt
