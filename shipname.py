@@ -26,18 +26,28 @@ def authenticate():
     eve_sso_auth_url = security.get_auth_uri(scopes=['esi-location.read_ship_type.v1'])
     webbrowser.open(eve_sso_auth_url, new=2)  # open in a new browser tab
     auth_code = fetch_auth_code()  # fetch authentication code using a temporary web server
-    security.auth(auth_code)
+    tokens = security.auth(auth_code)
 
-    return (app, client, security)
+    return (app, client, security, tokens)
+
+
+def refresh_access_token(security, refresh_token):
+    security.update_token({
+        'access_token': '',
+        'expires_in': -1,
+        'refresh_token': refresh_token
+    })
+    tokens = security.refresh()
+
+    return tokens
 
 
 authenticated = False
 while(True):
     if not authenticated:
-        app, client, security = authenticate()
+        app, client, security, tokens = authenticate()
         api_info = security.verify()
         authenticated = True  # we're authed now
-
 
     try:
         op = app.op['get_characters_character_id_ship'](
@@ -45,10 +55,8 @@ while(True):
         )
         ship = client.request(op)
     except APIException:
-        pass
+        tokens = refresh_access_token(security, tokens['refresh_token'])
 
-
-    # and to see the data behind, let's print it
     ship_type_id = ship.data['ship_type_id']
     ship_name = get_name_by_typeid(ship_type_id)
     with open('shipname.txt', 'w') as f:
