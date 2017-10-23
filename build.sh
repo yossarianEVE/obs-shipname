@@ -1,4 +1,4 @@
 #!/bin/bash
 
-venv/bin/pyinstaller shipname.py
-cp typeids.db dist/shipname/
+venv/bin/pyinstaller --onefile --clean shipname.spec
+cp typeids.db dist/
